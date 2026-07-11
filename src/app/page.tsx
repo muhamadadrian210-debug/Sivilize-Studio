@@ -4,29 +4,35 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
-import { Palette, LayoutTemplate, Zap } from 'lucide-react'
+import { LayoutTemplate, ArrowRight, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 
 export default function GatekeeperPage() {
   const [showOptions, setShowOptions] = useState(false)
 
   useEffect(() => {
-    // Reveal options after logo intro animation finishes (approx 2.5s)
+    // Reveal options after logo intro animation finishes (approx 2s)
     const timer = setTimeout(() => {
       setShowOptions(true)
-    }, 2500)
+    }, 2000)
     return () => clearTimeout(timer)
   }, [])
 
   return (
-    <div className="bg-background selection:bg-primary/30 relative flex min-h-screen w-full flex-col items-center overflow-x-hidden">
+    <div className="bg-background selection:bg-primary/30 relative flex min-h-screen w-full flex-col overflow-x-hidden">
       {/* Background Ambience */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: showOptions ? 0.4 : 0.1 }}
+          animate={{ opacity: showOptions ? 0.3 : 0.1 }}
           transition={{ duration: 1.5 }}
-          className="bg-primary/30 absolute top-1/2 left-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[150px]"
+          className="bg-primary/20 absolute top-0 left-0 h-[800px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[180px]"
+        />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: showOptions ? 0.2 : 0 }}
+          transition={{ duration: 2, delay: 0.5 }}
+          className="absolute right-0 bottom-0 h-[600px] w-[600px] translate-x-1/3 translate-y-1/3 rounded-full bg-violet-600/20 blur-[150px]"
         />
       </div>
 
@@ -36,130 +42,175 @@ export default function GatekeeperPage() {
             key="intro"
             initial={{ opacity: 0, scale: 0.9, filter: 'blur(10px)' }}
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
-            transition={{ duration: 1, ease: 'easeOut' }}
+            exit={{ opacity: 0, scale: 1.05, filter: 'blur(10px)' }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
             className="z-10 flex min-h-screen w-full flex-col items-center justify-center"
           >
-            <Image
-              src="/logo.jpg"
-              alt="Sivilize Studio Logo"
-              width={96}
-              height={96}
-              className="mb-4 h-24 w-24 rounded-2xl object-cover shadow-[0_0_50px_rgba(124,58,237,0.5)]"
-            />
-            <h1 className="text-4xl font-bold tracking-tight text-white">
+            <div className="relative">
+              <div className="absolute -inset-4 rounded-full bg-violet-500/20 blur-xl"></div>
+              <Image
+                src="/logo.jpg"
+                alt="Sivilize Studio Logo"
+                width={112}
+                height={112}
+                className="relative mb-6 h-28 w-28 rounded-3xl object-cover shadow-[0_0_60px_rgba(124,58,237,0.5)]"
+              />
+            </div>
+            <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl">
               Sivilize Studio
             </h1>
             <motion.div
               initial={{ width: 0 }}
-              animate={{ width: '200px' }}
-              transition={{ delay: 0.5, duration: 1.5, ease: 'easeInOut' }}
-              className="via-primary mt-4 h-px bg-gradient-to-r from-transparent to-transparent"
+              animate={{ width: '250px' }}
+              transition={{ delay: 0.5, duration: 1.2, ease: 'easeInOut' }}
+              className="via-primary mt-6 h-px bg-gradient-to-r from-transparent to-transparent"
             />
           </motion.div>
         ) : (
-          <div key="content" className="z-10 flex w-full flex-col items-center">
-            {/* Gatekeeper Section */}
+          <div
+            key="content"
+            className="z-10 flex min-h-screen w-full flex-col lg:flex-row"
+          >
+            {/* Left Column: Educational & Value Proposition */}
             <motion.div
-              initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="flex min-h-screen max-w-2xl flex-col items-center justify-center px-6 text-center"
+              className="flex w-full flex-col justify-center px-8 py-16 lg:w-1/2 lg:px-20 xl:px-32"
             >
-              <h2 className="mb-6 text-4xl leading-tight font-bold tracking-tight text-white md:text-5xl">
-                Siap revolusi cara kerja agensi lu?
-              </h2>
-              <p className="text-muted-foreground mx-auto mb-12 max-w-lg text-lg">
-                Sistem operasi dokumen bisnis bertenaga AI. Otomatisasi SPH,
-                proposal, dan invoice dalam hitungan detik.
-              </p>
-
-              <div className="flex w-full flex-col items-center justify-center gap-6 sm:flex-row">
-                <Link
-                  href="/register"
-                  className={buttonVariants({
-                    size: 'lg',
-                    className:
-                      'h-14 w-full rounded-full px-12 text-base font-semibold shadow-[0_0_40px_-10px_rgba(124,58,237,0.8)] sm:w-auto',
-                  })}
-                >
-                  Mulai Daftar
-                </Link>
-                <Link
-                  href="/dashboard"
-                  className={buttonVariants({
-                    variant: 'outline',
-                    size: 'lg',
-                    className:
-                      'glass h-14 w-full rounded-full border-white/20 px-12 text-base font-semibold text-white hover:bg-white/10 sm:w-auto',
-                  })}
-                >
-                  Coba Demo
-                </Link>
+              <div className="mb-12 flex items-center gap-4">
+                <Image
+                  src="/logo.jpg"
+                  alt="Sivilize Studio Logo"
+                  width={40}
+                  height={40}
+                  className="rounded-xl shadow-[0_0_20px_rgba(124,58,237,0.4)]"
+                />
+                <span className="text-xl font-bold tracking-wide text-white">
+                  Sivilize Studio
+                </span>
               </div>
-            </motion.div>
 
-            {/* How It Works Section */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: '-100px' }}
-              transition={{ duration: 1 }}
-              className="mt-12 flex w-full max-w-5xl flex-col items-center border-t border-white/10 px-6 py-32"
-            >
-              <h3 className="mb-4 text-3xl font-bold text-white">
-                Cara Kerja Sivilize Studio
-              </h3>
-              <p className="text-muted-foreground mb-16 max-w-xl text-center">
-                Nggak perlu lagi pusing mikirin format atau desain dokumen.
-                Semuanya serba otomatis.
+              <h2 className="mb-6 text-4xl leading-tight font-extrabold tracking-tight text-white lg:text-5xl xl:text-6xl">
+                Otomatisasi Dokumen Bisnis{' '}
+                <span className="text-gradient-primary">Tanpa Batas.</span>
+              </h2>
+
+              <p className="text-muted-foreground mb-12 max-w-lg text-lg leading-relaxed">
+                Ubah berjam-jam rutinitas administratif menjadi hitungan menit.
+                Sistem operasi dokumen cerdas yang dirancang khusus untuk
+                mempercepat pertumbuhan korporasi Anda.
               </p>
 
-              <div className="relative grid w-full grid-cols-1 gap-8 md:grid-cols-3">
-                {/* Connecting Line (Desktop only) */}
-                <div className="via-primary/50 absolute top-12 right-1/6 left-1/6 -z-10 hidden h-px bg-gradient-to-r from-transparent to-transparent md:block" />
-
+              {/* Feature Stepper */}
+              <div className="relative flex flex-col gap-8 before:absolute before:inset-y-0 before:left-6 before:w-px before:bg-white/10">
                 {/* Step 1 */}
-                <div className="group flex flex-col items-center text-center">
-                  <div className="glass-card group-hover:border-primary/50 mb-6 flex h-20 w-20 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110">
-                    <Palette className="h-8 w-8 text-white/80" />
+                <div className="relative flex items-start gap-6">
+                  <div className="z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-[0_0_15px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                    <span className="text-sm font-bold text-violet-400">1</span>
                   </div>
-                  <h4 className="mb-2 text-xl font-bold text-white">
-                    1. Atur Brand Kit
-                  </h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    Masukkan logo, warna, font, dan profil perusahaan lu sekali
-                    aja. Sistem bakal nginget selamanya.
-                  </p>
+                  <div>
+                    <h3 className="mb-2 text-xl font-semibold text-white">
+                      Atur Brand Kit
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Masukkan identitas visual dan profil perusahaan. Sistem
+                      akan menyimpannya sebagai fondasi seluruh dokumen masa
+                      depan.
+                    </p>
+                  </div>
                 </div>
 
                 {/* Step 2 */}
-                <div className="group flex flex-col items-center text-center">
-                  <div className="glass-card group-hover:border-primary/50 mb-6 flex h-20 w-20 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110">
-                    <LayoutTemplate className="h-8 w-8 text-white/80" />
+                <div className="relative flex items-start gap-6">
+                  <div className="z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-[0_0_15px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                    <span className="text-sm font-bold text-violet-400">2</span>
                   </div>
-                  <h4 className="mb-2 text-xl font-bold text-white">
-                    2. Pilih Template
-                  </h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    Mau bikin SPH, Proposal, atau Invoice? Pilih template
-                    profesional yang udah disediain.
-                  </p>
+                  <div>
+                    <h3 className="mb-2 text-xl font-semibold text-white">
+                      Gaya Dokumen (Style Cloning)
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Unggah dokumen PDF lama Anda. AI kami akan membedah dan
+                      meniru tonasi serta gaya penulisan agar sesuai dengan DNA
+                      perusahaan.
+                    </p>
+                  </div>
                 </div>
 
                 {/* Step 3 */}
-                <div className="group flex flex-col items-center text-center">
-                  <div className="glass-card group-hover:border-primary/50 mb-6 flex h-20 w-20 items-center justify-center rounded-2xl transition-all duration-300 group-hover:scale-110">
-                    <Zap className="text-primary h-8 w-8" />
+                <div className="relative flex items-start gap-6">
+                  <div className="bg-primary/20 border-primary/30 z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border shadow-[0_0_20px_rgba(124,58,237,0.3)] backdrop-blur-md">
+                    <Sparkles className="h-5 w-5 text-violet-300" />
                   </div>
-                  <h4 className="mb-2 text-xl font-bold text-white">
-                    3. AI Generate & Export
-                  </h4>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    Ketik perintah singkat, AI bakal racik isi dokumennya.
-                    Langsung export ke PDF/Word siap kirim.
-                  </p>
+                  <div>
+                    <h3 className="mb-2 text-xl font-semibold text-white">
+                      Generate & Kolaborasi
+                    </h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      Ketik instruksi singkat, dan biarkan AI merakit dokumen
+                      secara utuh. Kolaborasi dengan tim dan ekspor ke PDF
+                      presisi tinggi.
+                    </p>
+                  </div>
                 </div>
+              </div>
+            </motion.div>
+
+            {/* Right Column: Interactive CTA Panel */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+              className="relative flex w-full flex-col items-center justify-center overflow-hidden border-l border-white/5 bg-white/[0.02] px-6 py-16 lg:w-1/2"
+            >
+              {/* Subtle ambient glow in the right panel */}
+              <div className="pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[100px]"></div>
+
+              <div className="glass-card relative z-10 flex w-full max-w-md flex-col items-center rounded-3xl p-10 text-center">
+                <div className="bg-primary/20 mb-8 rounded-2xl p-4">
+                  <LayoutTemplate className="h-10 w-10 text-violet-300" />
+                </div>
+
+                <h2 className="mb-4 text-2xl font-bold text-white">
+                  Mulai Transformasi Digital
+                </h2>
+                <p className="text-muted-foreground mb-10 text-sm leading-relaxed">
+                  Bergabunglah dengan ekosistem Sivilize Corp dan tinggalkan
+                  cara kerja tradisional. Sistem kami siap melayani operasional
+                  Anda.
+                </p>
+
+                <div className="flex w-full flex-col gap-4">
+                  <Link
+                    href="/dashboard"
+                    className={buttonVariants({
+                      size: 'lg',
+                      className:
+                        'group h-14 w-full rounded-xl text-base font-semibold shadow-[0_0_30px_-5px_rgba(124,58,237,0.5)]',
+                    })}
+                  >
+                    Masuk ke Workspace
+                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </Link>
+
+                  <Link
+                    href="/register"
+                    className={buttonVariants({
+                      variant: 'outline',
+                      size: 'lg',
+                      className:
+                        'h-14 w-full rounded-xl border-white/10 bg-white/5 text-base font-semibold text-white hover:bg-white/10 hover:text-white',
+                    })}
+                  >
+                    Buat Akun Perusahaan
+                  </Link>
+                </div>
+
+                <p className="text-muted-foreground/60 mt-8 text-[11px]">
+                  Dengan mendaftar, Anda menyetujui Syarat & Ketentuan serta
+                  Kebijakan Privasi Sivilize Studio.
+                </p>
               </div>
             </motion.div>
           </div>
