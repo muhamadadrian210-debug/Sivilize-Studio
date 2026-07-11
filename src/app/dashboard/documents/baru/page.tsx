@@ -213,6 +213,57 @@ export default function BuatDokumenPage() {
               />
             </div>
 
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-300">
+                  Alamat Perusahaan
+                </label>
+                <Input
+                  name="senderAddress"
+                  required
+                  placeholder="Contoh: Jl. Sudirman No. 123, Jakarta"
+                  className="border-slate-800 bg-slate-950/60 text-white"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-300">
+                  Nomor Telepon
+                </label>
+                <Input
+                  name="senderPhone"
+                  required
+                  placeholder="Contoh: 021-1234567"
+                  className="border-slate-800 bg-slate-950/60 text-white"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-300">
+                  Email Perusahaan
+                </label>
+                <Input
+                  type="email"
+                  name="senderEmail"
+                  required
+                  placeholder="Contoh: info@perusahaan.com"
+                  className="border-slate-800 bg-slate-950/60 text-white"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-300">
+                  Tanggal Dokumen
+                </label>
+                <Input
+                  type="date"
+                  name="documentDate"
+                  required
+                  className="border-slate-800 bg-slate-950/60 text-white"
+                />
+              </div>
+            </div>
+
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-300">
                 Dokumen Referensi / Format Lama (Opsional)
@@ -231,11 +282,24 @@ export default function BuatDokumenPage() {
 
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-300">
+                Garis Besar Isi Dokumen
+              </label>
+              <textarea
+                name="mainPoints"
+                required
+                rows={3}
+                placeholder="Contoh: Menawarkan produk software akuntansi dengan diskon 20% khusus bulan ini."
+                className="placeholder:text-muted-foreground focus:ring-primary w-full rounded-md border border-slate-800 bg-slate-950/60 px-3 py-2 text-sm text-white focus:ring-1 focus:outline-none"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-slate-300">
                 Instruksi Tambahan (Opsional)
               </label>
               <textarea
                 name="instruction"
-                rows={4}
+                rows={2}
                 placeholder="Contoh: Gunakan bahasa yang sangat formal. Cantumkan masa berlaku penawaran selama 30 hari."
                 className="placeholder:text-muted-foreground focus:ring-primary w-full rounded-md border border-slate-800 bg-slate-950/60 px-3 py-2 text-sm text-white focus:ring-1 focus:outline-none"
               />

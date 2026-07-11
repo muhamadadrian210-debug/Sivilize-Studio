@@ -3,11 +3,11 @@
 import { useState } from 'react'
 import { buttonVariants } from '@/components/ui/button'
 
-export function CollaborationPanel({
-  documentId: _documentId,
-}: {
+interface CollaborationPanelProps {
   documentId: string
-}) {
+}
+
+export function CollaborationPanel({ documentId }: CollaborationPanelProps) {
   const [comments, setComments] = useState<
     { id: string; text: string; user: string }[]
   >([])
