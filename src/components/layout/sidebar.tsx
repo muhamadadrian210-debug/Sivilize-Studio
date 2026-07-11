@@ -28,13 +28,14 @@ export function Sidebar() {
       {/* Workspace / Company Selector */}
       <div className="border-sidebar-border flex h-16 items-center border-b px-6">
         <div className="flex w-full items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl border border-violet-500/30 bg-violet-500/10 shadow-[0_0_12px_rgba(139,92,246,0.2)]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-violet-500/30 bg-white shadow-[0_0_12px_rgba(139,92,246,0.25)]">
             <Image
               src="/logo.jpg"
               alt="Sivilize Logo"
-              width={36}
-              height={36}
-              className="h-full w-full rounded-xl object-cover"
+              width={40}
+              height={40}
+              unoptimized
+              className="h-full w-full object-contain"
             />
           </div>
           <div className="flex flex-1 flex-col overflow-hidden">
