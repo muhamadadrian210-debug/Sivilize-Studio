@@ -44,7 +44,7 @@ export default function GatekeeperPage() {
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, scale: 1.05, filter: 'blur(10px)' }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="z-10 flex min-h-screen w-full flex-col items-center justify-center"
+            className="pt-safe z-10 flex min-h-screen w-full flex-col items-center justify-center"
           >
             <div className="relative">
               <div className="absolute -inset-4 rounded-full bg-violet-500/20 blur-xl"></div>
@@ -56,7 +56,7 @@ export default function GatekeeperPage() {
                 className="relative mb-6 h-28 w-28 rounded-3xl object-cover shadow-[0_0_60px_rgba(124,58,237,0.5)]"
               />
             </div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-5xl">
+            <h1 className="text-center text-4xl font-extrabold tracking-tight text-white md:text-5xl">
               Sivilize Studio
             </h1>
             <motion.div
@@ -69,16 +69,16 @@ export default function GatekeeperPage() {
         ) : (
           <div
             key="content"
-            className="z-10 flex min-h-screen w-full flex-col lg:flex-row"
+            className="z-10 flex min-h-screen w-full flex-col pt-12 pt-[env(safe-area-inset-top,3rem)] md:pt-16 lg:flex-row lg:pt-0"
           >
             {/* Left Column: Educational & Value Proposition */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="flex w-full flex-col justify-center px-8 py-16 lg:w-1/2 lg:px-20 xl:px-32"
+              className="flex w-full flex-col justify-center px-6 py-12 md:px-12 lg:w-1/2 lg:px-20 xl:px-32"
             >
-              <div className="mb-12 flex items-center gap-4">
+              <div className="mb-8 flex items-center gap-4 md:mb-12">
                 <Image
                   src="/logo.jpg"
                   alt="Sivilize Studio Logo"
@@ -92,28 +92,28 @@ export default function GatekeeperPage() {
               </div>
 
               <h2 className="mb-6 text-4xl leading-tight font-extrabold tracking-tight text-white lg:text-5xl xl:text-6xl">
-                Otomatisasi Dokumen Bisnis{' '}
+                Otomatisasi Dokumen Bisnis <br className="hidden md:block" />
                 <span className="text-gradient-primary">Tanpa Batas.</span>
               </h2>
 
-              <p className="text-muted-foreground mb-12 max-w-lg text-lg leading-relaxed">
+              <p className="text-muted-foreground mb-10 max-w-lg text-base leading-relaxed md:text-lg">
                 Ubah berjam-jam rutinitas administratif menjadi hitungan menit.
                 Sistem operasi dokumen cerdas yang dirancang khusus untuk
                 mempercepat pertumbuhan korporasi Anda.
               </p>
 
               {/* Feature Stepper */}
-              <div className="relative flex flex-col gap-8 before:absolute before:inset-y-0 before:left-6 before:w-px before:bg-white/10">
+              <div className="relative ml-2 flex flex-col gap-8 before:absolute before:inset-y-0 before:left-[1.375rem] before:w-px before:bg-white/10 md:ml-0">
                 {/* Step 1 */}
                 <div className="relative flex items-start gap-6">
-                  <div className="z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-[0_0_15px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                  <div className="z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-[0_0_15px_rgba(0,0,0,0.5)] backdrop-blur-md md:h-12 md:w-12">
                     <span className="text-sm font-bold text-violet-400">1</span>
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-semibold text-white">
+                    <h3 className="mb-2 text-lg font-semibold text-white md:text-xl">
                       Atur Brand Kit
                     </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
+                    <p className="text-muted-foreground pr-4 text-sm leading-relaxed">
                       Masukkan identitas visual dan profil perusahaan. Sistem
                       akan menyimpannya sebagai fondasi seluruh dokumen masa
                       depan.
@@ -123,14 +123,14 @@ export default function GatekeeperPage() {
 
                 {/* Step 2 */}
                 <div className="relative flex items-start gap-6">
-                  <div className="z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-[0_0_15px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                  <div className="z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/5 shadow-[0_0_15px_rgba(0,0,0,0.5)] backdrop-blur-md md:h-12 md:w-12">
                     <span className="text-sm font-bold text-violet-400">2</span>
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-semibold text-white">
+                    <h3 className="mb-2 text-lg font-semibold text-white md:text-xl">
                       Gaya Dokumen (Style Cloning)
                     </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
+                    <p className="text-muted-foreground pr-4 text-sm leading-relaxed">
                       Unggah dokumen PDF lama Anda. AI kami akan membedah dan
                       meniru tonasi serta gaya penulisan agar sesuai dengan DNA
                       perusahaan.
@@ -140,14 +140,14 @@ export default function GatekeeperPage() {
 
                 {/* Step 3 */}
                 <div className="relative flex items-start gap-6">
-                  <div className="bg-primary/20 border-primary/30 z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border shadow-[0_0_20px_rgba(124,58,237,0.3)] backdrop-blur-md">
-                    <Sparkles className="h-5 w-5 text-violet-300" />
+                  <div className="bg-primary/20 border-primary/30 z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border shadow-[0_0_20px_rgba(124,58,237,0.3)] backdrop-blur-md md:h-12 md:w-12">
+                    <Sparkles className="h-4 w-4 text-violet-300 md:h-5 md:w-5" />
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-semibold text-white">
+                    <h3 className="mb-2 text-lg font-semibold text-white md:text-xl">
                       Generate & Kolaborasi
                     </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
+                    <p className="text-muted-foreground pr-4 text-sm leading-relaxed">
                       Ketik instruksi singkat, dan biarkan AI merakit dokumen
                       secara utuh. Kolaborasi dengan tim dan ekspor ke PDF
                       presisi tinggi.
@@ -162,36 +162,36 @@ export default function GatekeeperPage() {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-              className="relative flex w-full flex-col items-center justify-center overflow-hidden border-l border-white/5 bg-white/[0.02] px-6 py-16 lg:w-1/2"
+              className="relative flex w-full flex-col items-center justify-center overflow-hidden border-t border-white/5 bg-white/[0.02] px-4 py-16 lg:w-1/2 lg:border-t-0 lg:border-l"
             >
               {/* Subtle ambient glow in the right panel */}
-              <div className="pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[100px]"></div>
+              <div className="pointer-events-none absolute top-1/2 left-1/2 h-[300px] w-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-violet-600/10 blur-[80px] md:h-[500px] md:w-[500px] md:blur-[100px]"></div>
 
-              <div className="glass-card relative z-10 flex w-full max-w-md flex-col items-center rounded-3xl p-10 text-center">
-                <div className="bg-primary/20 mb-8 rounded-2xl p-4">
-                  <LayoutTemplate className="h-10 w-10 text-violet-300" />
+              <div className="glass-card relative z-10 flex w-full max-w-md flex-col items-center rounded-3xl p-6 text-center md:p-10">
+                <div className="bg-primary/20 mb-6 rounded-2xl p-4 md:mb-8">
+                  <LayoutTemplate className="h-8 w-8 text-violet-300 md:h-10 md:w-10" />
                 </div>
 
-                <h2 className="mb-4 text-2xl font-bold text-white">
+                <h2 className="mb-3 text-xl font-bold text-white md:mb-4 md:text-2xl">
                   Mulai Transformasi Digital
                 </h2>
-                <p className="text-muted-foreground mb-10 text-sm leading-relaxed">
+                <p className="text-muted-foreground mb-8 px-2 text-xs leading-relaxed md:mb-10 md:text-sm">
                   Bergabunglah dengan ekosistem Sivilize Corp dan tinggalkan
                   cara kerja tradisional. Sistem kami siap melayani operasional
                   Anda.
                 </p>
 
-                <div className="flex w-full flex-col gap-4">
+                <div className="flex w-full flex-col gap-3 md:gap-4">
                   <Link
                     href="/dashboard"
                     className={buttonVariants({
                       size: 'lg',
                       className:
-                        'group h-14 w-full rounded-xl text-base font-semibold shadow-[0_0_30px_-5px_rgba(124,58,237,0.5)]',
+                        'group h-12 w-full rounded-xl text-sm font-semibold shadow-[0_0_30px_-5px_rgba(124,58,237,0.5)] md:h-14 md:text-base',
                     })}
                   >
-                    Masuk ke Workspace
-                    <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                    Masuk ke Workspace (Web)
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1 md:h-5 md:w-5" />
                   </Link>
 
                   <Link
@@ -200,16 +200,40 @@ export default function GatekeeperPage() {
                       variant: 'outline',
                       size: 'lg',
                       className:
-                        'h-14 w-full rounded-xl border-white/10 bg-white/5 text-base font-semibold text-white hover:bg-white/10 hover:text-white',
+                        'h-12 w-full rounded-xl border-white/10 bg-white/5 text-sm font-semibold text-white hover:bg-white/10 hover:text-white md:h-14 md:text-base',
                     })}
                   >
                     Buat Akun Perusahaan
                   </Link>
                 </div>
 
-                <p className="text-muted-foreground/60 mt-8 text-[11px]">
-                  Dengan mendaftar, Anda menyetujui Syarat & Ketentuan serta
-                  Kebijakan Privasi Sivilize Studio.
+                <div className="mt-8 w-full border-t border-white/10 pt-6">
+                  <p className="mb-4 text-xs font-medium text-white">
+                    Unduh Aplikasi Native (Capacitor)
+                  </p>
+                  <div className="flex w-full flex-col gap-3 sm:flex-row">
+                    <button
+                      className="flex h-10 flex-1 items-center justify-center rounded-lg border border-slate-700/50 bg-slate-800/80 text-xs font-semibold text-white transition-colors hover:bg-slate-700"
+                      onClick={() =>
+                        alert('Mengunduh APK untuk Mobile (Smartphone)...')
+                      }
+                    >
+                      📱 Download for Mobile
+                    </button>
+                    <button
+                      className="flex h-10 flex-1 items-center justify-center rounded-lg border border-slate-700/50 bg-slate-800/80 text-xs font-semibold text-white transition-colors hover:bg-slate-700"
+                      onClick={() =>
+                        alert('Mengunduh APK untuk Tablet/iPad...')
+                      }
+                    >
+                      💻 Download for Tablet
+                    </button>
+                  </div>
+                </div>
+
+                <p className="text-muted-foreground/60 mt-6 px-4 text-[10px] md:text-[11px]">
+                  Dengan mendaftar atau mengunduh, Anda menyetujui Syarat &
+                  Ketentuan serta Kebijakan Privasi Sivilize Studio.
                 </p>
               </div>
             </motion.div>
