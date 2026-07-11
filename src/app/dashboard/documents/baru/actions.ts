@@ -1,0 +1,135 @@
+'use server'
+
+import { revalidatePath } from 'next/cache'
+import { generateText } from '@/lib/ai/text-generation'
+import { prisma } from '@/lib/database/prisma'
+import fs from 'fs'
+import path from 'path'
+// @ts-expect-error - pdf-parse has no default export type definition
+import pdfParse from 'pdf-parse'
+
+export async function generateDocumentAction(formData: FormData) {
+  try {
+    let documentType = formData.get('documentType') as string
+    if (documentType === 'Lainnya') {
+      documentType = formData.get('customDocumentType') as string
+    }
+
+    const targetName = formData.get('targetName') as string
+    const subjectName = formData.get('subjectName') as string
+    const price = formData.get('price') as string
+    const instruction = formData.get('instruction') as string
+
+    // Handle logo upload
+    const logoFile = formData.get('logo') as File | null
+    if (logoFile && logoFile.size > 0) {
+      const arrayBuffer = await logoFile.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+      const uploadDir = path.join(process.cwd(), 'public/uploads/logos')
+      if (!fs.existsSync(uploadDir))
+        fs.mkdirSync(uploadDir, { recursive: true })
+      fs.writeFileSync(
+        path.join(uploadDir, `${Date.now()}-${logoFile.name}`),
+        buffer
+      )
+    }
+
+    // Handle reference file upload
+    const refFile = formData.get('referenceFile') as File | null
+    let referenceText = ''
+    if (refFile && refFile.size > 0) {
+      const arrayBuffer = await refFile.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+      if (refFile.name.endsWith('.pdf')) {
+        const parsed = await pdfParse(buffer)
+        referenceText = parsed.text
+      } else {
+        referenceText = buffer.toString('utf-8')
+      }
+    }
+
+    const basePrompt = `Anda adalah asisten legal dan bisnis profesional. Buatkan draf dokumen dengan tata bahasa Indonesia yang baku, formal, dan sesuai Ejaan Yang Disempurnakan (EYD).\n\n`
+    let prompt = ''
+
+    switch (documentType) {
+      case 'SPH':
+        prompt = `${basePrompt}Jenis: Surat Penawaran Harga (SPH)\nTujuan: ${targetName}\nProyek/Barang: ${subjectName}\nHarga Penawaran: ${price}\nInstruksi Khusus: ${instruction}\nFormatlah dengan rapi meliputi kop, pembuka, isi penawaran, dan penutup.`
+        break
+      case 'Invoice':
+        prompt = `${basePrompt}Jenis: Invoice / Surat Tagihan\nTujuan Tagihan: ${targetName}\nPerihal: ${subjectName}\nTotal Tagihan: ${price}\nInstruksi Khusus: ${instruction}\nBuat format tagihan yang rapi dan profesional.`
+        break
+      case 'Company Profile':
+        prompt = `${basePrompt}Jenis: Company Profile\nNama Perusahaan: ${targetName}\nIndustri: ${subjectName}\nInstruksi Khusus: ${instruction}\nBuatkan kerangka isi yang meyakinkan, mencakup visi, misi, dan layanan utama.`
+        break
+      case 'Surat Pemerintah':
+        prompt = `${basePrompt}Jenis: Surat Dinas Pemerintahan\nInstansi Tujuan: ${targetName}\nPerihal: ${subjectName}\nInstruksi Khusus: ${instruction}\nGunakan struktur surat dinas resmi (nomor surat, lampiran, perihal, pembuka, isi, penutup yang sangat formal).`
+        break
+      default:
+        // Untuk jenis dokumen lainnya secara dinamis (MoU, Paklaring, dll)
+        const priceDetail = price ? `\nNilai/Harga Terkait: ${price}` : ''
+        prompt = `${basePrompt}Jenis Dokumen: ${documentType}\nPihak/Tujuan: ${targetName}\nPerihal/Subjek: ${subjectName}${priceDetail}\nInstruksi Khusus: ${instruction}\nBuatlah dokumen yang komprehensif dan profesional sesuai standar korporat.`
+        break
+    }
+
+    if (referenceText) {
+      // Potong referensi jika terlalu panjang (maksimal ~3000 karakter)
+      const clippedRef =
+        referenceText.length > 3000
+          ? referenceText.substring(0, 3000) + '...'
+          : referenceText
+      prompt += `\n\n=== DOKUMEN REFERENSI GAYA BAHASA & STRUKTUR ===\nSilakan tiru gaya bahasa dan kerangka dari dokumen lama berikut:\n${clippedRef}\n===============================================\n`
+    }
+
+    let aiContent = 'Gagal memanggil layanan AI.'
+    try {
+      aiContent = await generateText(prompt, 'TEXT')
+    } catch (aiErr) {
+      console.warn('AI Generation failed:', aiErr)
+      aiContent = `DOKUMEN ${documentType.toUpperCase()}\n\nTujuan: ${targetName}\nPerihal: ${subjectName}\n\n(Catatan: Layanan AI saat ini tidak tersedia, silakan sunting draf ini secara manual).`
+    }
+
+    let company = await prisma.company.findFirst()
+    if (!company) {
+      company = await prisma.company.create({
+        data: {
+          name: 'Sivilize Corp',
+          workspace: {
+            create: { name: 'Primary Workspace', ownerId: 'user-123' },
+          },
+        },
+      })
+    }
+
+    await prisma.document.create({
+      data: {
+        title: `${documentType === 'SPH' ? 'SPH' : documentType} - ${subjectName}`,
+        type: documentType,
+        status: 'Draft',
+        companyId: company.id,
+        createdBy: 'Sistem',
+        versions: {
+          create: {
+            version: 1,
+            content: aiContent,
+            createdBy: 'Gemini AI',
+          },
+        },
+      },
+    })
+
+    revalidatePath('/dashboard/documents')
+    return {
+      success: true,
+      message: `Dokumen ${documentType} berhasil dibuat.`,
+    }
+  } catch (error: unknown) {
+    console.error('Generate Document Error:', error)
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Terjadi kesalahan pada sistem.',
+    }
+  }
+}
