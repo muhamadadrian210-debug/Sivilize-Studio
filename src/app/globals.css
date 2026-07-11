@@ -157,3 +157,24 @@
     @apply from-primary bg-gradient-to-r to-purple-400 bg-clip-text text-transparent;
   }
 }
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #canvas-droppable,
+  #canvas-droppable * {
+    visibility: visible;
+  }
+  #canvas-droppable {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    width: 100% !important;
+    height: 100% !important;
+    background: white !important;
+  }
+}

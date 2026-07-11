@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { generateAILayoutAction } from '@/app/editor/actions'
 import { useEditorStore } from '@/store/editor-store'
 import {
@@ -62,6 +62,7 @@ function CanvasArea({ title }: { title: string }) {
     >
       {/* Paper Container (Realistic Off-White Paper) */}
       <div
+        id="canvas-droppable"
         ref={setNodeRef}
         className={`${getPaperDimensions()} relative flex flex-col rounded-sm border border-slate-200/50 bg-slate-50 p-16 text-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-300 ease-in-out`}
       >
@@ -126,7 +127,12 @@ import { CollaborationPanel } from './CollaborationPanel'
 export function EditorWorkspace({
   document,
 }: {
-  document: { id: string; title: string; type?: string }
+  document: {
+    id: string
+    title: string
+    type?: string
+    versions?: { content: string }[]
+  }
 }) {
   const [activeTab, setActiveTab] = useState<'properties' | 'comments'>(
     'properties'
@@ -140,6 +146,27 @@ export function EditorWorkspace({
   const paperSize = useEditorStore((state) => state.paperSize)
 
   const selectedElement = elements.find((el) => el.id === selectedElementId)
+
+  // Initialize with AI content if available and canvas is empty
+  useEffect(() => {
+    // Check if we have versions and canvas is empty
+    if (
+      document.versions &&
+      document.versions.length > 0 &&
+      elements.length === 0
+    ) {
+      const initialContent = document.versions[0].content
+      addElement({
+        id: `el-initial-${Date.now()}`,
+        type: 'text',
+        x: 80,
+        y: 80,
+        width: 634, // A4 width minus margins
+        height: 800, // Large initial height
+        content: initialContent,
+      })
+    }
+  }, [document.versions, elements.length, addElement])
 
   // Handle AI Layout Generation
   const handleGenerateAI = async () => {

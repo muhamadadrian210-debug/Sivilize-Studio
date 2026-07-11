@@ -1,27 +1,54 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { buttonVariants } from '@/components/ui/button'
+import { getComments, addComment } from '@/app/editor/actions'
 
 interface CollaborationPanelProps {
   documentId: string
 }
 
 export function CollaborationPanel({ documentId }: CollaborationPanelProps) {
-  // Will be used for real-time collaboration API
-  void documentId
   const [comments, setComments] = useState<
     { id: string; text: string; user: string }[]
   >([])
   const [newComment, setNewComment] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handlePost = () => {
+  useEffect(() => {
+    async function loadComments() {
+      const res = await getComments(documentId)
+      if (res.success && res.comments) {
+        setComments(
+          res.comments.map(
+            (c: { id: string; message: string; user?: string }) => ({
+              id: c.id,
+              text: c.message,
+              user: c.user || 'User',
+            })
+          )
+        )
+      }
+    }
+    loadComments()
+  }, [documentId])
+
+  const handlePost = async () => {
     if (!newComment.trim()) return
-    setComments([
-      ...comments,
-      { id: Date.now().toString(), text: newComment, user: 'You' },
-    ])
-    setNewComment('')
+    setIsLoading(true)
+    const res = await addComment(documentId, newComment)
+    if (res.success && res.comment) {
+      setComments([
+        ...comments,
+        {
+          id: res.comment.id,
+          text: res.comment.message,
+          user: res.comment.user || 'You',
+        },
+      ])
+      setNewComment('')
+    }
+    setIsLoading(false)
   }
 
   return (
@@ -49,13 +76,14 @@ export function CollaborationPanel({ documentId }: CollaborationPanelProps) {
           onChange={(e) => setNewComment(e.target.value)}
         />
         <button
-          onClick={handlePost}
           className={buttonVariants({
             size: 'sm',
             className: 'h-8 w-full text-xs',
           })}
+          onClick={handlePost}
+          disabled={isLoading || !newComment.trim()}
         >
-          Post Comment
+          {isLoading ? 'Posting...' : 'Post Comment'}
         </button>
       </div>
     </div>
