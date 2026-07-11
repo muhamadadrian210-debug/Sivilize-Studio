@@ -8,6 +8,8 @@ interface CollaborationPanelProps {
 }
 
 export function CollaborationPanel({ documentId }: CollaborationPanelProps) {
+  // Will be used for real-time collaboration API
+  void documentId
   const [comments, setComments] = useState<
     { id: string; text: string; user: string }[]
   >([])
