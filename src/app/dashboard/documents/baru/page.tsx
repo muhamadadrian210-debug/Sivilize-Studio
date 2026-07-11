@@ -163,16 +163,29 @@ export default function BuatDokumenPage() {
               </div>
             )}
 
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-slate-300">
-                {labelTargetName}
-              </label>
-              <Input
-                name="targetName"
-                required
-                placeholder="Contoh: PT Teknologi Nusantara"
-                className="border-slate-800 bg-slate-950/60 text-white"
-              />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-300">
+                  {labelTargetName}
+                </label>
+                <Input
+                  name="targetName"
+                  required
+                  placeholder="Contoh: PT Teknologi Nusantara / Bpk. Budi"
+                  className="border-slate-800 bg-slate-950/60 text-white"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-300">
+                  Jabatan Penerima / Divisi
+                </label>
+                <Input
+                  name="targetPosition"
+                  required
+                  placeholder="Contoh: Kepala Bidang / Direktur HRD"
+                  className="border-slate-800 bg-slate-950/60 text-white"
+                />
+              </div>
             </div>
 
             <div className="space-y-2">

@@ -5,8 +5,7 @@ import { generateText } from '@/lib/ai/text-generation'
 import { prisma } from '@/lib/database/prisma'
 import fs from 'fs'
 import path from 'path'
-// @ts-expect-error - pdf-parse has no default export type definition
-import pdfParse from 'pdf-parse'
+// pdf-parse is required dynamically to prevent Turbopack build errors
 
 export async function generateDocumentAction(formData: FormData) {
   try {
@@ -16,6 +15,7 @@ export async function generateDocumentAction(formData: FormData) {
     }
 
     const targetName = formData.get('targetName') as string
+    const targetPosition = formData.get('targetPosition') as string
     const subjectName = formData.get('subjectName') as string
     const price = formData.get('price') as string
 
@@ -49,6 +49,8 @@ export async function generateDocumentAction(formData: FormData) {
       const arrayBuffer = await refFile.arrayBuffer()
       const buffer = Buffer.from(arrayBuffer)
       if (refFile.name.endsWith('.pdf')) {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const pdfParse = require('pdf-parse')
         const parsed = await pdfParse(buffer)
         referenceText = parsed.text
       } else {
@@ -62,21 +64,21 @@ export async function generateDocumentAction(formData: FormData) {
 
     switch (documentType) {
       case 'SPH':
-        prompt = `${basePrompt}Jenis: Surat Penawaran Harga (SPH)\nTujuan: ${targetName}\nProyek/Barang: ${subjectName}\nHarga Penawaran: ${price}\nGaris Besar Isi: ${mainPoints}\nInstruksi Khusus: ${instruction}\nFormatlah dengan rapi meliputi kop surat pengirim, pembuka, isi penawaran, dan penutup.`
+        prompt = `${basePrompt}Jenis: Surat Penawaran Harga (SPH)\nTujuan/Penerima: ${targetName} (${targetPosition})\nProyek/Barang: ${subjectName}\nHarga Penawaran: ${price}\nGaris Besar Isi: ${mainPoints}\nInstruksi Khusus: ${instruction}\nFormatlah dengan rapi meliputi kop surat pengirim, pembuka, isi penawaran, dan penutup.`
         break
       case 'Invoice':
-        prompt = `${basePrompt}Jenis: Invoice / Surat Tagihan\nTujuan Tagihan: ${targetName}\nPerihal: ${subjectName}\nTotal Tagihan: ${price}\nGaris Besar Isi: ${mainPoints}\nInstruksi Khusus: ${instruction}\nBuat format tagihan yang rapi dan profesional.`
+        prompt = `${basePrompt}Jenis: Invoice / Surat Tagihan\nTujuan Tagihan: ${targetName} (${targetPosition})\nPerihal: ${subjectName}\nTotal Tagihan: ${price}\nGaris Besar Isi: ${mainPoints}\nInstruksi Khusus: ${instruction}\nBuat format tagihan yang rapi dan profesional.`
         break
       case 'Company Profile':
-        prompt = `${basePrompt}Jenis: Company Profile\nNama Perusahaan (Tujuan/Fokus): ${targetName}\nIndustri: ${subjectName}\nGaris Besar Isi: ${mainPoints}\nInstruksi Khusus: ${instruction}\nBuatkan kerangka isi yang meyakinkan, mencakup visi, misi, dan layanan utama.`
+        prompt = `${basePrompt}Jenis: Company Profile\nNama Perusahaan (Tujuan/Fokus): ${targetName} (${targetPosition})\nIndustri: ${subjectName}\nGaris Besar Isi: ${mainPoints}\nInstruksi Khusus: ${instruction}\nBuatkan kerangka isi yang meyakinkan, mencakup visi, misi, dan layanan utama.`
         break
       case 'Surat Pemerintah':
-        prompt = `${basePrompt}Jenis: Surat Dinas Pemerintahan\nInstansi Tujuan: ${targetName}\nPerihal: ${subjectName}\nGaris Besar Isi: ${mainPoints}\nInstruksi Khusus: ${instruction}\nGunakan struktur surat dinas resmi (nomor surat, lampiran, perihal, pembuka, isi, penutup yang sangat formal).`
+        prompt = `${basePrompt}Jenis: Surat Dinas Pemerintahan\nInstansi Tujuan: ${targetName}\nJabatan Penerima: ${targetPosition}\nPerihal: ${subjectName}\nGaris Besar Isi: ${mainPoints}\nInstruksi Khusus: ${instruction}\nGunakan struktur surat dinas resmi (nomor surat, lampiran, perihal, pembuka, isi, penutup yang sangat formal).`
         break
       default:
         // Untuk jenis dokumen lainnya secara dinamis (MoU, Paklaring, dll)
         const priceDetail = price ? `\nNilai/Harga Terkait: ${price}` : ''
-        prompt = `${basePrompt}Jenis Dokumen: ${documentType}\nPihak/Tujuan: ${targetName}\nPerihal/Subjek: ${subjectName}${priceDetail}\nGaris Besar Isi: ${mainPoints}\nInstruksi Khusus: ${instruction}\nBuatlah dokumen yang komprehensif dan profesional sesuai standar korporat.`
+        prompt = `${basePrompt}Jenis Dokumen: ${documentType}\nPihak/Tujuan: ${targetName}\nJabatan Penerima: ${targetPosition}\nPerihal/Subjek: ${subjectName}${priceDetail}\nGaris Besar Isi: ${mainPoints}\nInstruksi Khusus: ${instruction}\nBuatlah dokumen yang komprehensif dan profesional sesuai standar korporat.`
         break
     }
 
