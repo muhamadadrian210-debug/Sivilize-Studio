@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sivilize Studio
 
-## Getting Started
+**Sivilize Studio** adalah platform _Business Document OS_ cerdas yang dirancang untuk mempercepat, mengotomatisasi, dan menyederhanakan proses pembuatan dokumen bisnis perusahaan.
 
-First, run the development server:
+Platform ini hadir sebagai solusi bagi korporasi dan tenaga profesional untuk tidak lagi membuang waktu dalam merancang draf surat penawaran, invoice, profil perusahaan, hingga dokumen legal lainnya secara manual.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+> **Sivilize Studio** merupakan bagian tak terpisahkan dari ekosistem **Sivilize Corp Indonesia**, sebuah komitmen untuk mendorong transformasi digital di lingkungan bisnis tanah air.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Fitur Utama
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### ✨ Pembuatan Dokumen Didukung AI
 
-## Learn More
+Sivilize Studio menggunakan kecerdasan buatan untuk merancang draf dokumen yang profesional, rapi, dan menggunakan tata bahasa baku (EYD). Cukup masukkan detail penerima, garis besar isi, dan instruksi khusus—sistem akan memolesnya menjadi dokumen siap pakai. Sistem juga mampu meniru gaya bahasa dari dokumen PDF referensi yang Anda unggah.
 
-To learn more about Next.js, take a look at the following resources:
+### 📝 Editor Dokumen Interaktif & Cerdas
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Kertas kosong bukan lagi masalah. Hasil _generate_ AI akan secara otomatis di-inject ke dalam kanvas editor. Anda bisa menyunting dokumen dengan bebas seperti di atas kertas fisik (dengan pilihan ukuran A4, Letter, hingga Legal).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 💬 Kolaborasi Tim Waktu Nyata (Real-Time)
 
-## Deploy on Vercel
+Sistem memiliki panel kolaborasi di mana anggota tim, manajer, atau supervisor bisa meninggalkan catatan revisi, komentar, dan masukan secara langsung pada sebuah dokumen sebelum disetujui (_Approved_). Seluruh jejak pendapat direkam permanen dalam sistem agar tidak ada revisi yang terlewat.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 🖨️ Cetak & Ekspor PDF Presisi
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Aplikasi didesain memiliki fungsi cetak pintar. Saat Anda menekan tombol ekspor, sistem akan otomatis menghilangkan seluruh elemen UI (sidebar, tombol, header navigasi) dan hanya mencetak _kertas dokumen_ bersih dalam resolusi tinggi, siap untuk dibagikan ke klien.
+
+---
+
+## Sasaran Pengguna
+
+1. **Pemilik Bisnis (CEO/Founder)** yang butuh dokumen kerja cepat tanpa harus menyewa agen legal mahal.
+2. **Tim Sales & Marketing** yang perlu membuat _Surat Penawaran Harga (SPH)_ dan _Invoice_ massal dalam hitungan menit.
+3. **Pekerja Lepas (Freelancer)** yang memerlukan kontrak dan _Company Profile_ premium.
+4. **Instansi Pemerintah & BUMN** yang mewajibkan struktur persuratan dinas baku.
+
+---
+
+## Hak Cipta & Lisensi
+
+Sivilize Studio adalah produk eksklusif. Seluruh antarmuka, alur kerja (workflow), logo, dan struktur logika sistem merupakan kekayaan intelektual yang dilindungi.
+
+**&copy; 2026 Sivilize Studio | Part of Sivilize Corp Indonesia Ecosystem. All Rights Reserved.**
+Dilarang keras menyalin, mendistribusikan, atau memodifikasi kode dan aset tanpa izin resmi dari pihak Sivilize Corp Indonesia.

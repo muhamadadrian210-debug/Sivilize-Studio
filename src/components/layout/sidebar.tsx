@@ -76,7 +76,7 @@ export function Sidebar() {
       </div>
 
       {/* Footer / User Profile */}
-      <div className="border-sidebar-border border-t p-4">
+      <div className="border-sidebar-border flex flex-col gap-4 border-t p-4">
         <div className="hover:bg-sidebar-accent/50 flex cursor-pointer items-center gap-3 rounded-xl px-2 py-2 transition-colors">
           <div className="bg-muted border-border flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border">
             <span className="text-muted-foreground text-xs font-bold">CTO</span>
@@ -89,6 +89,19 @@ export function Sidebar() {
               bos@sivilize.com
             </span>
           </div>
+        </div>
+        <div className="px-2 text-center">
+          <p className="text-muted-foreground/60 text-[10px] leading-relaxed">
+            Part of the{' '}
+            <span className="font-semibold text-violet-400/70">
+              Sivilize Corp Indonesia
+            </span>{' '}
+            Ecosystem
+          </p>
+          <p className="text-muted-foreground/40 mt-1 text-[9px]">
+            &copy; {new Date().getFullYear()} Sivilize Studio. All rights
+            reserved.
+          </p>
         </div>
       </div>
     </aside>
