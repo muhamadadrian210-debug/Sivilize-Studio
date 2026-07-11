@@ -8,6 +8,23 @@ Platform ini hadir sebagai solusi bagi korporasi dan tenaga profesional untuk ti
 
 ---
 
+## 📖 Latar Belakang
+
+Sistem persuratan dan pembuatan dokumen di mayoritas perusahaan Indonesia masih terjebak di era 90-an. Karyawan menghabiskan waktu berjam-jam hanya untuk mencari _template_ Word lama, menyesuaikan margin yang selalu berantakan, dan mengetik ulang data klien yang sama berulang kali. Kesalahan ketik (typo) pada Surat Penawaran Harga atau Kontrak seringkali berakibat fatal pada reputasi perusahaan. Sivilize Studio lahir dari rasa frustrasi tersebut—menggantikan alur kerja manual yang rentan kesalahan dengan orkestrasi AI yang cerdas, presisi, dan terpusat.
+
+## 🎯 Visi & Misi
+
+**Visi:**
+Menjadi ekosistem infrastruktur digital (SaaS) nomor satu di Asia Tenggara yang mengotomatisasi seluruh beban administratif korporat, sehingga manusia dapat kembali fokus pada hal yang paling penting: _Berpikir dan Berinovasi_.
+
+**Misi:**
+
+1. Mendisrupsi cara kerja tradisional dengan menghadirkan kecerdasan buatan (AI) yang paham konteks bisnis lokal.
+2. Memangkas SLA (Service Level Agreement) pembuatan dokumen bisnis dari ukuran hari menjadi hitungan menit.
+3. Menciptakan standarisasi dokumen perusahaan yang bebas cacat (_zero-defect_) melalui pengawasan _Human-in-the-Loop_.
+
+---
+
 ## Fitur Utama
 
 ### ✨ Pembuatan Dokumen Didukung AI
