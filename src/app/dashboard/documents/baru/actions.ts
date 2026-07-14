@@ -2,14 +2,32 @@
 
 import { revalidatePath } from 'next/cache'
 import { generateText } from '@/lib/ai/text-generation'
-import { getTenantCompanyId } from '@/lib/auth/session'
+import { getTenantCompanyId, getCurrentSession } from '@/lib/auth/session'
 import { prisma } from '@/lib/database/prisma'
+import { enforceAIRateLimit } from '@/lib/security/rate-limit'
 import fs from 'fs'
 import path from 'path'
 // pdf-parse is required dynamically to prevent Turbopack build errors
 
 export async function generateDocumentAction(formData: FormData) {
   try {
+    const companyId = await getTenantCompanyId()
+    if (!companyId) {
+      return {
+        success: false,
+        message:
+          'Akses ditolak: Anda tidak tergabung dalam perusahaan mana pun.',
+      }
+    }
+
+    const session = await getCurrentSession()
+    if (!session || !session.user) {
+      return { success: false, message: 'Authentication required' }
+    }
+
+    // ENFORCE RATE LIMIT TO PREVENT SPAM / BILLING ISSUES
+    await enforceAIRateLimit(companyId, session.user.id, 'document-generation')
+
     let documentType = formData.get('documentType') as string
     if (documentType === 'Lainnya') {
       documentType = formData.get('customDocumentType') as string
@@ -100,21 +118,12 @@ export async function generateDocumentAction(formData: FormData) {
       aiContent = `DOKUMEN ${documentType.toUpperCase()}\n\nTujuan: ${targetName}\nPerihal: ${subjectName}\n\n(Catatan: Layanan AI saat ini tidak tersedia, silakan sunting draf ini secara manual).`
     }
 
-    const companyId = await getTenantCompanyId()
-    if (!companyId) {
-      return {
-        success: false,
-        message:
-          'Akses ditolak: Anda tidak tergabung dalam perusahaan mana pun.',
-      }
-    }
-
     await prisma.document.create({
       data: {
         title: `${documentType === 'SPH' ? 'SPH' : documentType} - ${subjectName}`,
         type: documentType,
         status: 'Draft',
-        companyId: company.id,
+        companyId: companyId,
         createdBy: 'Sistem',
         versions: {
           create: {

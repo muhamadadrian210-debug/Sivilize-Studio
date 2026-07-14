@@ -7,6 +7,15 @@ export async function generateAILayoutAction(
   prompt: string
 ) {
   try {
+    const companyId = await getTenantCompanyId()
+    const session = await getCurrentSession()
+    if (!companyId || !session || !session.user) {
+      throw new Error('Authentication required')
+    }
+
+    const { enforceAIRateLimit } = await import('@/lib/security/rate-limit')
+    await enforceAIRateLimit(companyId, session.user.id, 'layout-generation')
+
     const layout = await generateDocumentLayout(documentType, prompt)
     return { success: true, layout }
   } catch (error: unknown) {
