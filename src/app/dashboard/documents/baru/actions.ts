@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { generateText } from '@/lib/ai/text-generation'
+import { getTenantCompanyId } from '@/lib/auth/session'
 import { prisma } from '@/lib/database/prisma'
 import fs from 'fs'
 import path from 'path'
@@ -99,16 +100,13 @@ export async function generateDocumentAction(formData: FormData) {
       aiContent = `DOKUMEN ${documentType.toUpperCase()}\n\nTujuan: ${targetName}\nPerihal: ${subjectName}\n\n(Catatan: Layanan AI saat ini tidak tersedia, silakan sunting draf ini secara manual).`
     }
 
-    let company = await prisma.company.findFirst()
-    if (!company) {
-      company = await prisma.company.create({
-        data: {
-          name: 'Sivilize Corp',
-          workspace: {
-            create: { name: 'Primary Workspace', ownerId: 'user-123' },
-          },
-        },
-      })
+    const companyId = await getTenantCompanyId()
+    if (!companyId) {
+      return {
+        success: false,
+        message:
+          'Akses ditolak: Anda tidak tergabung dalam perusahaan mana pun.',
+      }
     }
 
     await prisma.document.create({

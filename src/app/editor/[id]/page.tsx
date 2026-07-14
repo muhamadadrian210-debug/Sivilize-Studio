@@ -4,6 +4,7 @@ import { buttonVariants } from '@/components/ui/button'
 import Link from 'next/link'
 import { EditorWorkspace } from '@/features/editor/components/EditorWorkspace'
 import { PrintButton } from '@/features/editor/components/PrintButton'
+import { getTenantCompanyId } from '@/lib/auth/session'
 
 const prisma = new PrismaClient()
 
@@ -14,8 +15,16 @@ export default async function EditorPage({
 }) {
   const { id: documentId } = await params
 
+  const companyId = await getTenantCompanyId()
+  if (!companyId) {
+    notFound()
+  }
+
   const document = await prisma.document.findUnique({
-    where: { id: documentId },
+    where: {
+      id: documentId,
+      companyId: companyId, // STRICT TENANT ISOLATION
+    },
     include: {
       versions: {
         orderBy: { version: 'desc' },

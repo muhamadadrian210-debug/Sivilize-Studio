@@ -2,9 +2,19 @@ import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
 import { FileText, Plus, MoreVertical } from 'lucide-react'
 import { prisma } from '@/lib/database/prisma'
+import { getTenantCompanyId } from '@/lib/auth/session'
+import { redirect } from 'next/navigation'
 
 export default async function DocumentsHub() {
+  const companyId = await getTenantCompanyId()
+
+  if (!companyId) {
+    // If user has no active company, redirect to setup or error
+    redirect('/setup-company')
+  }
+
   const documents = await prisma.document.findMany({
+    where: { companyId }, // STRICT TENANT ISOLATION
     orderBy: { createdAt: 'desc' },
     include: {
       versions: true,

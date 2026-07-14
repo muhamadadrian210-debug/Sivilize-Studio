@@ -17,10 +17,23 @@ export async function generateAILayoutAction(
 
 import { PrismaClient } from '@prisma/client'
 import { revalidatePath } from 'next/cache'
+import { getTenantCompanyId, getCurrentSession } from '@/lib/auth/session'
 const prisma = new PrismaClient()
+
+async function verifyDocumentOwnership(documentId: string) {
+  const companyId = await getTenantCompanyId()
+  if (!companyId) return false
+  const doc = await prisma.document.findUnique({
+    where: { id: documentId, companyId },
+  })
+  return !!doc
+}
 
 export async function updateDocumentStatus(documentId: string, status: string) {
   try {
+    const isOwner = await verifyDocumentOwnership(documentId)
+    if (!isOwner) throw new Error('Unauthorized or document not found')
+
     await prisma.document.update({
       where: { id: documentId },
       data: { status },
@@ -31,8 +44,12 @@ export async function updateDocumentStatus(documentId: string, status: string) {
     return { success: false, message: String(error) }
   }
 }
+
 export async function getComments(documentId: string) {
   try {
+    const isOwner = await verifyDocumentOwnership(documentId)
+    if (!isOwner) throw new Error('Unauthorized or document not found')
+
     const comments = await prisma.comment.findMany({
       where: { documentId },
       orderBy: { createdAt: 'asc' },
@@ -45,27 +62,23 @@ export async function getComments(documentId: string) {
 
 export async function addComment(documentId: string, message: string) {
   try {
-    // In a real app we'd get the userId from session
-    // For now, we'll mock the userId with a system default or find the first user
-    let user = await prisma.user.findFirst()
-    if (!user) {
-      user = await prisma.user.create({
-        data: { name: 'Admin', email: 'admin@sivilize.com' },
-      })
-    }
+    const isOwner = await verifyDocumentOwnership(documentId)
+    if (!isOwner) throw new Error('Unauthorized or document not found')
+
+    const session = await getCurrentSession()
+    if (!session || !session.user) throw new Error('Authentication required')
 
     const comment = await prisma.comment.create({
       data: {
         documentId,
         message,
-        userId: user.id,
+        userId: session.user.id,
       },
     })
 
-    // We optionally include user data to mimic client needs
     const formattedComment = {
       ...comment,
-      user: user.name,
+      user: session.user.name,
     }
 
     revalidatePath(`/editor/${documentId}`)
