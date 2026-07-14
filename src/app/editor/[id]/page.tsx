@@ -37,6 +37,12 @@ export default async function EditorPage({
     notFound()
   }
 
+  // DECRYPT THE DOCUMENT CONTENT BEFORE SENDING TO CLIENT
+  if (document.versions && document.versions.length > 0) {
+    const { decrypt } = await import('@/lib/security/encryption')
+    document.versions[0].content = decrypt(document.versions[0].content)
+  }
+
   return (
     <div className="bg-muted/20 flex h-screen w-screen flex-col">
       {/* Top Toolbar */}

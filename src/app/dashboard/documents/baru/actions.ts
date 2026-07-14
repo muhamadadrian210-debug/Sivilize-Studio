@@ -118,6 +118,9 @@ export async function generateDocumentAction(formData: FormData) {
       aiContent = `DOKUMEN ${documentType.toUpperCase()}\n\nTujuan: ${targetName}\nPerihal: ${subjectName}\n\n(Catatan: Layanan AI saat ini tidak tersedia, silakan sunting draf ini secara manual).`
     }
 
+    const { encrypt } = await import('@/lib/security/encryption')
+    const encryptedContent = encrypt(aiContent)
+
     await prisma.document.create({
       data: {
         title: `${documentType === 'SPH' ? 'SPH' : documentType} - ${subjectName}`,
@@ -128,7 +131,7 @@ export async function generateDocumentAction(formData: FormData) {
         versions: {
           create: {
             version: 1,
-            content: aiContent,
+            content: encryptedContent,
             createdBy: 'Gemini AI',
           },
         },

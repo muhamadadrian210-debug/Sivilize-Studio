@@ -14,7 +14,11 @@ const envSchema = z.object({
   NEXT_PUBLIC_FIREBASE_APP_ID: z.string().optional(),
 
   // AI Keys
-  GEMINI_API_KEY: z.string().min(1),
+  GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required'),
+  ENCRYPTION_KEY: z
+    .string()
+    .min(32, 'ENCRYPTION_KEY must be exactly 32 characters long for AES-256')
+    .max(32, 'ENCRYPTION_KEY must be exactly 32 characters long for AES-256'),
 })
 
 let env: z.infer<typeof envSchema>
