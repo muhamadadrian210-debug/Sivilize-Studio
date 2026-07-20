@@ -193,6 +193,226 @@ function CanvasArea({ title }: { title: string }) {
 
 import { CollaborationPanel } from './CollaborationPanel'
 
+const generateUniqueId = (prefix: string) => {
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+}
+
+// Predefined templates (presets)
+const documentTemplates = [
+  {
+    id: 'sph',
+    name: '📄 Surat Penawaran (SPH)',
+    description: 'Template formal Surat Penawaran Harga pengadaan barang/jasa.',
+    elements: [
+      {
+        type: 'text',
+        x: 80,
+        y: 80,
+        width: 634,
+        height: 100,
+        content: `**PT SIVILIZE CORP INDONESIA**\n*Membangun Peradaban Melalui Solusi Teknologi*\nJl. Kel. Fatululi, Oebobo, Kupang, NTT | Telp: 0813-3821-9957\n------------------------------------------------------------`,
+      },
+      {
+        type: 'text',
+        x: 80,
+        y: 200,
+        width: 634,
+        height: 50,
+        content: `# SURAT PENAWARAN HARGA\nNo: 014/SCI-SPH/VII/2026`,
+      },
+      {
+        type: 'text',
+        x: 80,
+        y: 270,
+        width: 634,
+        height: 260,
+        content: `Kepada Yth,\n**Direktur Utama CV Mitra Abadi**\nDi Tempat\n\nDengan hormat,\nBersama surat ini, kami dari **PT Sivilize Corp Indonesia** mengajukan penawaran harga untuk pengerjaan sistem digitalisasi kasir dan website inventaris dengan rincian sebagai berikut:\n\n1. **Lisensi SiKasir Enterprise** - 1 Unit: Rp 15.000.000\n2. **Custom Web Development & Hosting** - 1 Paket: Rp 20.000.000\n3. **Pelatihan Staf & Pemeliharaan** - 1 Bulan: Rp 5.000.000\n\n**Total Penawaran: Rp 40.000.000 (Empat Puluh Juta Rupiah)**\n*Harga di atas belum termasuk PPN 11%.*`,
+      },
+      {
+        type: 'text',
+        x: 80,
+        y: 560,
+        width: 280,
+        height: 120,
+        content: `Hormat Kami,\n**PT Sivilize Corp Indonesia**\n\n\n\n*(Muhamad Adrian)*\nDirektur Utama`,
+      },
+      {
+        type: 'text',
+        x: 434,
+        y: 560,
+        width: 280,
+        height: 120,
+        content: `Menyetujui,\n**CV Mitra Abadi**\n\n\n\n*(.................................)*\nPerwakilan Klien`,
+      },
+    ],
+  },
+  {
+    id: 'spk',
+    name: '🤝 Kontrak Kerja (SPK)',
+    description: 'Surat Perjanjian Kerja kesepakatan dua belah pihak.',
+    elements: [
+      {
+        type: 'text',
+        x: 80,
+        y: 80,
+        width: 634,
+        height: 60,
+        content: `# SURAT PERJANJIAN KERJA (SPK)\nNo: 088/SCI-SPK/VII/2026`,
+      },
+      {
+        type: 'text',
+        x: 80,
+        y: 160,
+        width: 634,
+        height: 380,
+        content: `Pada hari ini, Senin tanggal 20 Juli 2026, telah disepakati Perjanjian Kerja antara:\n\n1. **Muhamad Adrian**, bertindak atas nama **PT Sivilize Corp Indonesia** (selanjutnya disebut **PIHAK PERTAMA**).\n2. **[Nama Klien]**, bertindak atas nama **[Nama Instansi/Klien]** (selanjutnya disebut **PIHAK KEDUA**).\n\nKedua belah pihak sepakat untuk melakukan kerja sama dengan ketentuan sebagai berikut:\n\n* **Pasal 1 (Lingkup Kerja)**: PIHAK PERTAMA akan menyediakan jasa pembuatan software *Sivilize Dine Lite* untuk unit restoran PIHAK KEDUA.\n* **Pasal 2 (Nilai Kontrak)**: Nilai kontrak disepakati sebesar **Rp 25.000.000 (Dua Puluh Lima Juta Rupiah)**.\n* **Pasal 3 (Metode Pembayaran)**: DP 50% di awal proyek, dan pelunasan 50% setelah uji coba selesai dilakukan.\n\nDemikian perjanjian ini dibuat untuk dipatuhi bersama.`,
+      },
+      {
+        type: 'text',
+        x: 80,
+        y: 570,
+        width: 280,
+        height: 120,
+        content: `**PIHAK PERTAMA**\nPT Sivilize Corp Indonesia\n\n\n\n*(Muhamad Adrian)*\nDirektur Utama`,
+      },
+      {
+        type: 'text',
+        x: 434,
+        y: 570,
+        width: 280,
+        height: 120,
+        content: `**PIHAK KEDUA**\n[Nama Instansi]\n\n\n\n*(.................................)*\nPerwakilan`,
+      },
+    ],
+  },
+  {
+    id: 'invoice',
+    name: '🧾 Invoice Tagihan',
+    description: 'Rincian pembayaran formal untuk tagihan klien.',
+    elements: [
+      {
+        type: 'text',
+        x: 80,
+        y: 80,
+        width: 300,
+        height: 120,
+        content: `**PT SIVILIZE CORP INDONESIA**\nJl. Kel. Fatululi, Oebobo\nKupang, NTT\nTelp: 0813-3821-9957\nmuhamadadrian210@gmail.com`,
+      },
+      {
+        type: 'text',
+        x: 434,
+        y: 80,
+        width: 280,
+        height: 120,
+        content: `# INVOICE\n**No: #INV-2026-009**\nTanggal: 20 Juli 2026\nJatuh Tempo: 04 Agustus 2026`,
+      },
+      {
+        type: 'text',
+        x: 80,
+        y: 220,
+        width: 634,
+        height: 80,
+        content: `**DITAGIHKAN KEPADA:**\n**[Nama Klien / Instansi]**\n[Alamat Klien]\nTelp: [Kontak Klien]`,
+      },
+      {
+        type: 'text',
+        x: 80,
+        y: 320,
+        width: 634,
+        height: 180,
+        content: `| Deskripsi Pekerjaan | Jumlah | Harga Satuan | Total |\n| :--- | :---: | :---: | :---: |\n| Pembuatan Aplikasi POS SiKasir | 1 | Rp 15.000.000 | Rp 15.000.000 |\n| Integrasi Database & API Cloud | 1 | Rp 5.000.000 | Rp 5.000.000 |\n| **Subtotal** | | | **Rp 20.000.000** |\n| PPN 11% | | | Rp 2.200.000 |\n| **Total Pembayaran** | | | **Rp 22.200.000** |`,
+      },
+      {
+        type: 'text',
+        x: 80,
+        y: 530,
+        width: 634,
+        height: 100,
+        content: `**Informasi Pembayaran:**\nTransfer Bank Mandiri: **123-456-789-0**\na.n. PT Sivilize Corp Indonesia\n*Harap sertakan bukti transfer via email/WhatsApp setelah melakukan pembayaran.*`,
+      },
+    ],
+  },
+  {
+    id: 'profile',
+    name: '🏢 Company Profile Brief',
+    description: 'Profil ringkas perusahaan dan pilar layanan.',
+    elements: [
+      {
+        type: 'text',
+        x: 80,
+        y: 80,
+        width: 634,
+        height: 150,
+        content: `# COMPANY PROFILE\n## PT Sivilize Corp Indonesia\n\n*Membangun Peradaban Melalui Solusi Komputasi yang Presisi*`,
+      },
+      {
+        type: 'text',
+        x: 80,
+        y: 250,
+        width: 634,
+        height: 250,
+        content: `### 🏢 Tentang Kami\nPT Sivilize Corp Indonesia adalah perusahaan teknologi yang didirikan oleh **Muhamad Adrian** dengan visi menghadirkan digitalisasi komprehensif bagi bisnis lokal dan konstruksi nasional. Kami percaya teknologi canggih harus bisa dinikmati secara instan dan ramah guna.\n\n### 🌐 Pilar Bisnis Utama\n* **Sivilize Hub Pro**: Sistem otomasi perhitungan RAB dan monitoring proyek sipil.\n* **SiKasir**: POS dan manajemen inventaris bertenaga asisten Gemini AI.\n* **Sivilize Dine Lite**: Aplikasi pemesanan QR, reservasi meja, dan CRM cafe/resto.\n* **Sivilize Brief**: Asisten transkrip dan notulensi rapat cerdas.`,
+      },
+      {
+        type: 'text',
+        x: 80,
+        y: 530,
+        width: 634,
+        height: 80,
+        content: `**Kontak Hubungi Kami:**\n📍 Kel. Fatululi, Oebobo, Kupang, NTT\n📧 muhamadadrian210@gmail.com | 📞 0813-3821-9957`,
+      },
+    ],
+  },
+]
+
+// Predefined components (modular blocks)
+const libraryComponents = [
+  {
+    id: 'kop_surat',
+    name: '🏢 Kop Surat Resmi',
+    description: 'Header resmi dengan nama PT Sivilize Corp Indonesia.',
+    element: {
+      type: 'text',
+      width: 634,
+      height: 100,
+      content: `**PT SIVILIZE CORP INDONESIA**\n*Membangun Peradaban Melalui Solusi Teknologi*\nJl. Kel. Fatululi, Oebobo, Kupang, NTT | Telp: 0813-3821-9957\n------------------------------------------------------------`,
+    },
+  },
+  {
+    id: 'tabel_harga',
+    name: '📊 Tabel Rincian Harga',
+    description: 'Tabel rincian harga barang/jasa formal.',
+    element: {
+      type: 'text',
+      width: 634,
+      height: 150,
+      content: `| Item Pekerjaan | Qty | Harga Satuan | Total |\n| :--- | :---: | :---: | :---: |\n| Jasa Pembuatan Website | 1 | Rp 15.000.000 | Rp 15.000.000 |\n| Integrasi Sistem Kasir | 1 | Rp 5.000.000 | Rp 5.000.000 |\n| **Total** | | | **Rp 20.000.000** |`,
+    },
+  },
+  {
+    id: 'tanda_tangan',
+    name: '✍️ Kolom Tanda Tangan',
+    description: 'Blok dua kolom tanda tangan pihak pengirim dan penerima.',
+    element: {
+      type: 'text',
+      width: 634,
+      height: 120,
+      content: `\n\n| Hormat Kami,\n**PT Sivilize Corp Indonesia**\n\n\n\n*(Muhamad Adrian)*\nDirektur Utama | Menyetujui,\n**[Nama Klien / Perwakilan]**\n\n\n\n*(.................................)*\nPerwakilan Klien |`,
+    },
+  },
+  {
+    id: 'footer_disclaimer',
+    name: '🛡️ Catatan & Disclaimer',
+    description: 'Catatan tambahan penawaran atau batas validitas.',
+    element: {
+      type: 'text',
+      width: 634,
+      height: 80,
+      content: `**Catatan:**\n* Penawaran ini berlaku selama 30 hari sejak tanggal dokumen dibuat.\n* Pembayaran uang muka (DP) minimal sebesar 50% sebelum pengerjaan dimulai.`,
+    },
+  },
+]
+
 export function EditorWorkspace({
   document,
 }: {
@@ -206,6 +426,7 @@ export function EditorWorkspace({
   const [activeTab, setActiveTab] = useState<'properties' | 'comments'>(
     'properties'
   )
+  const [leftTab, setLeftTab] = useState<'tools' | 'library'>('tools')
   const [isGenerating, setIsGenerating] = useState(false)
   const addElement = useEditorStore((state) => state.addElement)
   const selectedElementId = useEditorStore((state) => state.selectedElementId)
@@ -217,6 +438,42 @@ export function EditorWorkspace({
   const selectedElement = elements.find((el) => el.id === selectedElementId)
 
   const hasInitialized = useRef(false)
+
+  const applyTemplate = (
+    templateElements: (typeof documentTemplates)[0]['elements']
+  ) => {
+    clearCanvas()
+    templateElements.forEach((el, idx) => {
+      addElement({
+        id: generateUniqueId(`tpl-el-${idx}`),
+        type: el.type as 'text' | 'image',
+        x: el.x,
+        y: el.y,
+        width: el.width,
+        height: el.height,
+        content: el.content,
+      })
+    })
+  }
+
+  const insertComponent = (comp: (typeof libraryComponents)[0]['element']) => {
+    const currentMaxY = elements.reduce((max, el) => {
+      const bottom = el.y + el.height
+      return bottom > max ? bottom : max
+    }, 0)
+
+    const insertY = Math.max(80, currentMaxY + 24)
+
+    addElement({
+      id: generateUniqueId('lib-comp'),
+      type: comp.type as 'text' | 'image',
+      x: 80,
+      y: insertY,
+      width: comp.width,
+      height: comp.height,
+      content: comp.content,
+    })
+  }
 
   // Initialize with AI content if available and canvas is empty
   useEffect(() => {
@@ -328,32 +585,100 @@ export function EditorWorkspace({
   return (
     <DndContext onDragEnd={handleDragEnd}>
       <div className="flex flex-1 overflow-hidden">
-        {/* Left Sidebar (Tools/Elements) */}
-        <aside className="bg-background border-border/40 w-64 space-y-6 overflow-y-auto border-r p-4">
-          <div>
-            <h3 className="text-muted-foreground mb-3 text-sm font-medium tracking-wider uppercase">
-              Add Elements
-            </h3>
-            <div className="grid grid-cols-2 gap-2">
-              <DraggableTool id="text" label="Text Block" />
-              <DraggableTool id="image" label="Image" />
-            </div>
+        {/* Left Sidebar (Tools/Elements/Library) */}
+        <aside className="bg-background border-border/40 flex w-64 flex-col overflow-hidden border-r">
+          {/* Left Tab Switcher */}
+          <div className="border-border/40 bg-card flex border-b">
+            <button
+              className={`flex-1 py-3 text-[10px] font-bold tracking-wider uppercase transition-colors ${leftTab === 'tools' ? 'text-primary border-primary border-b-2' : 'text-muted-foreground hover:text-white'}`}
+              onClick={() => setLeftTab('tools')}
+            >
+              🛠️ Elements
+            </button>
+            <button
+              className={`flex-1 py-3 text-[10px] font-bold tracking-wider uppercase transition-colors ${leftTab === 'library' ? 'text-primary border-primary border-b-2' : 'text-muted-foreground hover:text-white'}`}
+              onClick={() => setLeftTab('library')}
+            >
+              📚 Library
+            </button>
           </div>
 
-          <div>
-            <h3 className="text-muted-foreground mb-3 text-sm font-medium tracking-wider uppercase">
-              AI Generation
-            </h3>
-            <button
-              onClick={handleGenerateAI}
-              disabled={isGenerating}
-              className={buttonVariants({
-                variant: 'secondary',
-                className: 'w-full text-xs',
-              })}
-            >
-              {isGenerating ? '⏳ Generating...' : '✨ Generate Layout'}
-            </button>
+          <div className="flex-1 space-y-6 overflow-y-auto p-4">
+            {leftTab === 'tools' ? (
+              <>
+                <div>
+                  <h3 className="text-muted-foreground mb-3 text-xs font-semibold tracking-wider uppercase">
+                    Add Elements
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <DraggableTool id="text" label="Text Block" />
+                    <DraggableTool id="image" label="Image" />
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-muted-foreground mb-3 text-xs font-semibold tracking-wider uppercase">
+                    AI Generation
+                  </h3>
+                  <button
+                    onClick={handleGenerateAI}
+                    disabled={isGenerating}
+                    className={buttonVariants({
+                      variant: 'secondary',
+                      className: 'w-full text-xs',
+                    })}
+                  >
+                    {isGenerating ? '⏳ Generating...' : '✨ Generate Layout'}
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <h3 className="text-muted-foreground mb-3 text-xs font-semibold tracking-wider uppercase">
+                    Document Templates
+                  </h3>
+                  <div className="space-y-3">
+                    {documentTemplates.map((tpl) => (
+                      <button
+                        key={tpl.id}
+                        onClick={() => applyTemplate(tpl.elements)}
+                        className="border-border/60 bg-muted/30 hover:border-primary hover:bg-primary/5 group w-full rounded-lg border p-3 text-left transition-all"
+                      >
+                        <div className="group-hover:text-primary text-xs font-semibold text-white transition-colors">
+                          {tpl.name}
+                        </div>
+                        <div className="text-muted-foreground mt-1 text-[10px] leading-normal">
+                          {tpl.description}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-muted-foreground mb-3 text-xs font-semibold tracking-wider uppercase">
+                    Modular Blocks
+                  </h3>
+                  <div className="space-y-3">
+                    {libraryComponents.map((comp) => (
+                      <button
+                        key={comp.id}
+                        onClick={() => insertComponent(comp.element)}
+                        className="border-border/60 bg-muted/30 hover:border-primary hover:bg-primary/5 group w-full rounded-lg border p-3 text-left transition-all"
+                      >
+                        <div className="group-hover:text-primary text-xs font-semibold text-white transition-colors">
+                          {comp.name}
+                        </div>
+                        <div className="text-muted-foreground mt-1 text-[10px] leading-normal">
+                          {comp.description}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </aside>
 
