@@ -45,7 +45,10 @@ function CanvasArea({ title }: { title: string }) {
 
   const elements = useEditorStore((state) => state.elements)
   const selectElement = useEditorStore((state) => state.selectElement)
+  const updateElement = useEditorStore((state) => state.updateElement)
   const paperSize = useEditorStore((state) => state.paperSize)
+
+  const [editingElementId, setEditingElementId] = useState<string | null>(null)
 
   const defaultMinHeight = (() => {
     switch (paperSize) {
@@ -150,18 +153,44 @@ function CanvasArea({ title }: { title: string }) {
               }}
             >
               {el.type === 'text' ? (
-                <div
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    lineHeight: 1.7,
-                    whiteSpace: 'pre-wrap',
-                    color: '#1a1a1a',
-                    fontSize: 14,
-                  }}
-                >
-                  <ReactMarkdown>{el.content}</ReactMarkdown>
-                </div>
+                editingElementId === el.id ? (
+                  <textarea
+                    value={el.content}
+                    onChange={(e) =>
+                      updateElement(el.id, { content: e.target.value })
+                    }
+                    onBlur={() => setEditingElementId(null)}
+                    autoFocus
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      lineHeight: 1.7,
+                      color: '#1a1a1a',
+                      fontSize: 14,
+                      fontFamily: 'inherit',
+                      background: 'transparent',
+                      border: '1px dashed #3b82f6',
+                      outline: 'none',
+                      resize: 'none',
+                      padding: 0,
+                      margin: 0,
+                    }}
+                  />
+                ) : (
+                  <div
+                    onDoubleClick={() => setEditingElementId(el.id)}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      lineHeight: 1.7,
+                      whiteSpace: 'pre-wrap',
+                      color: '#1a1a1a',
+                      fontSize: 14,
+                    }}
+                  >
+                    <ReactMarkdown>{el.content}</ReactMarkdown>
+                  </div>
+                )
               ) : (
                 <div
                   className="flex h-full w-full flex-col items-center justify-center rounded-lg p-4 text-center"
@@ -412,6 +441,65 @@ const libraryComponents = [
       width: 634,
       height: 80,
       content: `**Catatan:**\n* Penawaran ini berlaku selama 30 hari sejak tanggal dokumen dibuat.\n* Pembayaran uang muka (DP) minimal sebesar 50% sebelum pengerjaan dimulai.`,
+    },
+  },
+]
+
+// Predefined decorative ornaments (visual shapes, lines, frames)
+const decorativeComponents = [
+  {
+    id: 'divider_thick',
+    name: '━ Garis Tebal Pemisah',
+    description: 'Ornamen garis tebal pemisah bagian dokumen.',
+    element: {
+      type: 'text',
+      width: 634,
+      height: 40,
+      content: `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`,
+    },
+  },
+  {
+    id: 'divider_stars',
+    name: '★ Garis Bintang Dekorasi',
+    description: 'Pembatas dengan bintang estetik.',
+    element: {
+      type: 'text',
+      width: 634,
+      height: 40,
+      content: `\n★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★\n`,
+    },
+  },
+  {
+    id: 'divider_dashed',
+    name: '➖ Garis Putus-Putus',
+    description: 'Ornamen pembatas bermotif garis putus-putus.',
+    element: {
+      type: 'text',
+      width: 634,
+      height: 40,
+      content: `\n- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n`,
+    },
+  },
+  {
+    id: 'alert_highlight',
+    name: '💡 Kotak Catatan / Alert',
+    description: 'Kotak ornamen abu-abu dengan teks highlight catatan.',
+    element: {
+      type: 'text',
+      width: 634,
+      height: 90,
+      content: `> 💡 **PENTING / PERHATIAN**\n> Harap verifikasi dokumen dengan seksama sebelum melakukan penandatanganan.`,
+    },
+  },
+  {
+    id: 'badge_ornament',
+    name: '🏆 Badge Penghargaan',
+    description: 'Desain blok ornamen teks pengakuan resmi.',
+    element: {
+      type: 'text',
+      width: 634,
+      height: 100,
+      content: `> ### 🏆 PIAGAM PENGHARGAAN\n> Diberikan kepada pihak terkait atas kontribusi luar biasa dalam membangun ekosistem digital bersama **PT Sivilize Corp Indonesia**.`,
     },
   },
 ]
@@ -744,6 +832,28 @@ export function EditorWorkspace({
                   </h3>
                   <div className="space-y-3">
                     {libraryComponents.map((comp) => (
+                      <button
+                        key={comp.id}
+                        onClick={() => insertComponent(comp.element)}
+                        className="border-border/60 bg-muted/30 hover:border-primary hover:bg-primary/5 group w-full rounded-lg border p-3 text-left transition-all"
+                      >
+                        <div className="group-hover:text-primary text-xs font-semibold text-white transition-colors">
+                          {comp.name}
+                        </div>
+                        <div className="text-muted-foreground mt-1 text-[10px] leading-normal">
+                          {comp.description}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-muted-foreground mb-3 text-xs font-semibold tracking-wider uppercase">
+                    ✨ Hiasan & Ornamen
+                  </h3>
+                  <div className="space-y-3">
+                    {decorativeComponents.map((comp) => (
                       <button
                         key={comp.id}
                         onClick={() => insertComponent(comp.element)}
