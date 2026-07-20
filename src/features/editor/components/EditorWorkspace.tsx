@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { generateAILayoutAction } from '@/app/editor/actions'
 import { useEditorStore } from '@/store/editor-store'
+import ReactMarkdown from 'react-markdown'
 import {
   DndContext,
   useDraggable,
@@ -21,6 +22,7 @@ function DraggableTool({ id, label }: { id: string; label: string }) {
   return (
     <div
       ref={setNodeRef}
+      suppressHydrationWarning
       {...listeners}
       {...attributes}
       className={`bg-muted/50 hover:border-primary flex h-20 cursor-grab items-center justify-center rounded border text-xs ${
@@ -42,35 +44,85 @@ function CanvasArea({ title }: { title: string }) {
   const selectElement = useEditorStore((state) => state.selectElement)
   const paperSize = useEditorStore((state) => state.paperSize)
 
-  // Define paper dimensions based on size (96 DPI)
-  const getPaperDimensions = () => {
+  const defaultMinHeight = (() => {
     switch (paperSize) {
       case 'Letter':
-        return 'w-[816px] min-h-[1056px]'
+        return 1056
       case 'Legal':
-        return 'w-[816px] min-h-[1344px]'
+        return 1344
       case 'A4':
       default:
-        return 'w-[794px] min-h-[1123px]'
+        return 1123
     }
-  }
+  })()
+
+  // Calculate the bottom-most coordinate (y + height + bottom padding) of all canvas elements
+  const maxElementBottom = elements.reduce((max, el) => {
+    const bottom = (el.y || 0) + (el.height || 0)
+    return bottom > max ? bottom : max
+  }, 0)
+
+  const paperHeight = Math.max(defaultMinHeight, maxElementBottom + 64)
+
+  const paperStyle: React.CSSProperties = (() => {
+    switch (paperSize) {
+      case 'Letter':
+        return { width: 816, minHeight: paperHeight }
+      case 'Legal':
+        return { width: 816, minHeight: paperHeight }
+      case 'A4':
+      default:
+        return { width: 794, minHeight: paperHeight }
+    }
+  })()
 
   return (
     <main
-      className="flex flex-1 items-center justify-center overflow-auto bg-slate-950/60 p-8"
+      style={{
+        display: 'flex',
+        flex: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        overflow: 'auto',
+        padding: 32,
+        backgroundColor: '#1e1e2e',
+      }}
       onClick={() => selectElement(null)}
     >
-      {/* Paper Container (Realistic Off-White Paper) */}
+      {/* Paper Container — pure inline styles */}
       <div
         id="canvas-droppable"
         ref={setNodeRef}
-        className={`${getPaperDimensions()} relative flex flex-col rounded-sm border border-slate-200/50 bg-slate-50 p-16 text-slate-900 shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-all duration-300 ease-in-out`}
+        style={{
+          ...paperStyle,
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          borderRadius: 2,
+          padding: 64,
+          backgroundColor: '#ffffff',
+          color: '#1a1a1a',
+          border: '1px solid #d1d5db',
+          boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+          colorScheme: 'light',
+        }}
       >
         {/* Render elements based on state */}
         {elements.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 p-8 text-center">
-            <h1 className="mb-2 text-3xl font-bold text-slate-800">{title}</h1>
-            <p className="max-w-sm text-sm text-slate-500">
+          <div
+            className="flex flex-1 flex-col items-center justify-center rounded-lg p-8 text-center"
+            style={{
+              border: '2px dashed #cbd5e1',
+              backgroundColor: '#ffffff',
+            }}
+          >
+            <h1
+              className="mb-2 text-3xl font-bold tracking-tight"
+              style={{ color: '#1e293b' }}
+            >
+              {title}
+            </h1>
+            <p className="max-w-sm text-sm" style={{ color: '#64748b' }}>
               Start dragging elements here or use AI to generate the document
               layout.
             </p>
@@ -79,12 +131,15 @@ function CanvasArea({ title }: { title: string }) {
           elements.map((el) => (
             <div
               key={el.id}
-              className="hover:border-primary/50 hover:bg-primary/5 group absolute cursor-pointer rounded border border-transparent p-2 transition-colors"
               style={{
+                position: 'absolute',
                 left: el.x,
                 top: el.y,
                 width: el.width,
                 height: el.height,
+                cursor: 'pointer',
+                padding: 8,
+                color: '#1a1a1a',
               }}
               onClick={(e) => {
                 e.stopPropagation()
@@ -93,23 +148,37 @@ function CanvasArea({ title }: { title: string }) {
             >
               {el.type === 'text' ? (
                 <div
-                  className={`h-full w-full leading-relaxed whitespace-pre-wrap text-slate-700 ${
-                    el.content.toLowerCase().includes('title') ||
-                    el.content.toLowerCase().includes('header') ||
-                    el.content.length < 50
-                      ? 'text-2xl font-bold tracking-tight text-slate-900'
-                      : 'text-sm'
-                  }`}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    lineHeight: 1.7,
+                    whiteSpace: 'pre-wrap',
+                    color: '#1a1a1a',
+                    fontSize: 14,
+                  }}
                 >
-                  {el.content}
+                  <ReactMarkdown>{el.content}</ReactMarkdown>
                 </div>
               ) : (
-                <div className="group-hover:border-primary/40 flex h-full w-full flex-col items-center justify-center rounded-lg border border-slate-300/60 bg-gradient-to-tr from-slate-100 to-slate-200 p-4 text-center">
+                <div
+                  className="flex h-full w-full flex-col items-center justify-center rounded-lg p-4 text-center"
+                  style={{
+                    border: '1px solid #d1d5db',
+                    background:
+                      'linear-gradient(to top right, #f1f5f9, #e2e8f0)',
+                  }}
+                >
                   <span className="text-2xl">🖼️</span>
-                  <span className="mt-2 text-xs font-semibold text-slate-700">
+                  <span
+                    className="mt-2 text-xs font-semibold"
+                    style={{ color: '#334155' }}
+                  >
                     AI Image Component
                   </span>
-                  <span className="mt-1 max-w-[85%] truncate text-[10px] text-slate-400">
+                  <span
+                    className="mt-1 max-w-[85%] truncate text-[10px]"
+                    style={{ color: '#94a3b8' }}
+                  >
                     {el.content}
                   </span>
                 </div>
@@ -147,17 +216,21 @@ export function EditorWorkspace({
 
   const selectedElement = elements.find((el) => el.id === selectedElementId)
 
+  const hasInitialized = useRef(false)
+
   // Initialize with AI content if available and canvas is empty
   useEffect(() => {
     // Check if we have versions and canvas is empty
     if (
       document.versions &&
       document.versions.length > 0 &&
-      elements.length === 0
+      elements.length === 0 &&
+      !hasInitialized.current
     ) {
+      hasInitialized.current = true
       const initialContent = document.versions[0].content
       addElement({
-        id: `el-initial-${Date.now()}`,
+        id: `el-initial-${crypto.randomUUID()}`,
         type: 'text',
         x: 80,
         y: 80,

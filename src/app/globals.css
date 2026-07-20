@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
+@plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -156,6 +157,36 @@
   .text-gradient-primary {
     @apply from-primary bg-gradient-to-r to-purple-400 bg-clip-text text-transparent;
   }
+}
+
+/* ===== PAPER CANVAS: Force light theme inside the editor paper ===== */
+[data-paper='true'],
+[data-paper='true'] * {
+  color-scheme: light !important;
+}
+
+[data-paper='true'] {
+  background-color: #ffffff !important;
+  color: #1a1a1a !important;
+}
+
+[data-paper='true'] div,
+[data-paper='true'] p,
+[data-paper='true'] span,
+[data-paper='true'] h1,
+[data-paper='true'] h2,
+[data-paper='true'] h3,
+[data-paper='true'] h4,
+[data-paper='true'] h5,
+[data-paper='true'] h6,
+[data-paper='true'] li,
+[data-paper='true'] ul,
+[data-paper='true'] ol,
+[data-paper='true'] strong,
+[data-paper='true'] em,
+[data-paper='true'] a {
+  color: #1a1a1a !important;
+  border-color: #d1d5db !important;
 }
 @media print {
   body * {

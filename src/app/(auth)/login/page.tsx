@@ -60,7 +60,7 @@ export default function LoginPage() {
         </CardContent>
         <CardFooter className="flex flex-col space-y-4 pt-2">
           <Link
-            href="/dashboard"
+            href="/api/dev/bypass-login"
             className={buttonVariants({
               className:
                 'bg-primary hover:bg-primary/95 text-primary-foreground w-full font-semibold',
