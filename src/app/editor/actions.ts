@@ -97,3 +97,32 @@ export async function addComment(documentId: string, message: string) {
     return { success: false, message: String(error) }
   }
 }
+
+export async function parseDocumentImageAction(dataUrl: string) {
+  try {
+    const companyId = await getTenantCompanyId()
+    const session = await getCurrentSession()
+    if (!companyId || !session || !session.user) {
+      throw new Error('Authentication required')
+    }
+
+    const { enforceAIRateLimit } = await import('@/lib/security/rate-limit')
+    await enforceAIRateLimit(companyId, session.user.id, 'vision-parsing')
+
+    // Parse data URL to mimeType and base64Data
+    const match = dataUrl.match(/^data:([^;]+);base64,(.+)$/)
+    if (!match) {
+      throw new Error('Format gambar tidak valid.')
+    }
+    const mimeType = match[1]
+    const base64Data = match[2]
+
+    const { parseDocumentImage } = await import('@/lib/ai/vision-ai')
+    const elements = await parseDocumentImage(base64Data, mimeType)
+
+    return { success: true, elements }
+  } catch (error: unknown) {
+    console.error('Vision Action Error:', error)
+    return { success: false, message: String(error) }
+  }
+}

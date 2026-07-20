@@ -1,7 +1,10 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { generateAILayoutAction } from '@/app/editor/actions'
+import {
+  generateAILayoutAction,
+  parseDocumentImageAction,
+} from '@/app/editor/actions'
 import { useEditorStore } from '@/store/editor-store'
 import ReactMarkdown from 'react-markdown'
 import {
@@ -428,6 +431,59 @@ export function EditorWorkspace({
   )
   const [leftTab, setLeftTab] = useState<'tools' | 'library'>('tools')
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isParsing, setIsParsing] = useState(false)
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setIsParsing(true)
+    const reader = new FileReader()
+    reader.onloadend = async () => {
+      const dataUrl = reader.result as string
+      try {
+        const res = await parseDocumentImageAction(dataUrl)
+        if (res.success && res.elements) {
+          clearCanvas()
+          res.elements.forEach(
+            (
+              el: {
+                type: string
+                x?: number
+                y?: number
+                width?: number
+                height?: number
+                content?: string
+              },
+              idx: number
+            ) => {
+              addElement({
+                id: generateUniqueId(`ocr-el-${idx}`),
+                type: el.type === 'image' ? 'image' : 'text',
+                x: el.x || 80,
+                y: el.y || 80 + idx * 150,
+                width: el.width || 634,
+                height: el.height || 100,
+                content: el.content || '',
+              })
+            }
+          )
+          alert(
+            'AI berhasil mendeteksi tata letak surat! Silakan geser atau edit elemen.'
+          )
+        } else {
+          alert(res.message || 'Gagal memproses gambar surat.')
+        }
+      } catch (err) {
+        console.error(err)
+        alert('Terjadi kesalahan saat memproses gambar.')
+      } finally {
+        setIsParsing(false)
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+
   const addElement = useEditorStore((state) => state.addElement)
   const selectedElementId = useEditorStore((state) => state.selectedElementId)
   const elements = useEditorStore((state) => state.elements)
@@ -630,6 +686,32 @@ export function EditorWorkspace({
                   >
                     {isGenerating ? '⏳ Generating...' : '✨ Generate Layout'}
                   </button>
+                </div>
+
+                <div className="border-border/40 border-t pt-4">
+                  <h3 className="text-muted-foreground mb-2 text-xs font-semibold tracking-wider uppercase">
+                    📷 AI Image Parser
+                  </h3>
+                  <p className="text-muted-foreground mb-3 text-[10px] leading-normal">
+                    Unggah foto/scan surat fisik untuk diubah otomatis menjadi
+                    elemen kanvas yang bisa diedit dan digeser.
+                  </p>
+                  <label
+                    className={buttonVariants({
+                      variant: 'outline',
+                      className:
+                        'flex w-full cursor-pointer items-center justify-center gap-2 text-xs',
+                    })}
+                  >
+                    {isParsing ? '⏳ Memproses...' : '📁 Pilih Gambar Surat'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      disabled={isParsing}
+                      onChange={handleImageUpload}
+                    />
+                  </label>
                 </div>
               </>
             ) : (
