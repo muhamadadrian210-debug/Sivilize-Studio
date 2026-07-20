@@ -78,7 +78,8 @@ export async function generateDocumentAction(formData: FormData) {
     }
 
     const senderInfo = `\n[Info Pengirim]\nAlamat: ${senderAddress}\nTelepon: ${senderPhone}\nEmail: ${senderEmail}\nTanggal Dokumen: ${documentDate}\n`
-    const basePrompt = `Anda adalah asisten legal dan bisnis profesional. Buatkan draf dokumen dengan tata bahasa Indonesia yang baku, formal, dan sesuai Ejaan Yang Disempurnakan (EYD).${senderInfo}\n`
+    const basePrompt = `Anda adalah asisten legal dan bisnis profesional. Buatkan draf dokumen dengan tata bahasa Indonesia yang baku, formal, dan sesuai Ejaan Yang Disempurnakan (EYD).
+PENTING: Hasilkan HANYA teks dokumen langsung dari awal draf. JANGAN sertakan kata sambutan pembuka (seperti "Tentu, saya akan membantu Anda...", "Berikut adalah draf SPH..."), penjelasan di awal/akhir, atau penutup percakapan basa-basi. Draf harus langsung diawali dengan kop surat atau judul surat.${senderInfo}\n`
     let prompt = ''
 
     switch (documentType) {
